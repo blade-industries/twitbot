@@ -1,3 +1,4 @@
+//TODO: gaming tweets with video, jumbled tweets, 
 // Our Twitter library
 var Twit = require('twit');
 
@@ -5,7 +6,7 @@ var Twit = require('twit');
 var T = new Twit(require('./config.js'));
 
 // This is the URL of a search for the latest tweets on the '#mediaarts' hashtag.
-var mediaArtsSearch = {q: "#gaming", count: 10, result_type: "recent"}; 
+var mediaArtsSearch = {q: "#gaming", count: 10, result_type: "recent"};
 
 // This function finds the latest tweet with the #mediaarts hashtag, and retweets it.
 function retweetLatest() {
