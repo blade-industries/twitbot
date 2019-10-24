@@ -1,3 +1,4 @@
+//TODO: gaming tweets with video, jumbled tweets, 
 // Our Twitter library
 var Twit = require('twit');
 
