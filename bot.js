@@ -5,7 +5,7 @@ var Twit = require('twit');
 var T = new Twit(require('./config.js'));
 
 // This is the URL of a search for the latest tweets on the '#mediaarts' hashtag.
-var mediaArtsSearch = {q: "#gaming", count: 10, result_type: "recent"}; 
+var mediaArtsSearch = {q: "#gaming", count: 10, result_type: "recent"};
 
 // This function finds the latest tweet with the #mediaarts hashtag, and retweets it.
 function retweetLatest() {
@@ -26,6 +26,7 @@ function retweetLatest() {
 				console.log('There was an error with Twitter:', error);
 			}
 		})
+        T.post('statuses/update', {status: 'gaming'}, function(error, data, response) {console.log(data)});
 	  }
 	  // However, if our original search request had an error, we want to print it out here.
 	  else {
