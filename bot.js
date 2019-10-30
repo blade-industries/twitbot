@@ -32,8 +32,10 @@ function retweetLatest() {
 function scramble(text) {
 	var newText = text.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
 	stringArray = newText.split(" ");
+	
 	var iterations = stringArray.length;
 	var newStringArray = [""];
+
 	var i;
 	for(i = 0; i < iterations; i++) {
 
@@ -41,6 +43,7 @@ function scramble(text) {
 		newStringArray.push(stringArray[index]);
 		stringArray.splice(index, 1);
 		console.log('added ' + newStringArray[newStringArray.length - 1]);
+
 	}
 	newText = "";
 	for(str of newStringArray) {
