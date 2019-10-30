@@ -29,16 +29,18 @@ function retweetLatest() {
 	});
 }
 
-function scramble(var text) {
+function scramble(text) {
 	var newText = text.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
 	stringArray = newText.split(" ");
 	var iterations = stringArray.length;
-	var newStringArray;
+	var newStringArray = [""];
 	var i;
 	for(i = 0; i < iterations; i++) {
+
 		var index = Math.floor(Math.random() * stringArray.length);
 		newStringArray.push(stringArray[index]);
 		stringArray.splice(index, 1);
+		console.log('added ' + newStringArray[newStringArray.length - 1]);
 	}
 	newText = "";
 	for(str of newStringArray) {
