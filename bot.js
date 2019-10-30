@@ -1,4 +1,4 @@
-//TODO: gaming tweets with video, jumbled tweets, 
+//TODO: gaming tweets with video, jumbled tweets,
 // Our Twitter library
 var Twit = require('twit');
 
@@ -16,24 +16,35 @@ function retweetLatest() {
 	  // If our search request to the server had no errors...
 	  if (!error) {
 	  	// ...then we grab the ID of the tweet we want to retweet...
-		var retweetId = data.statuses[0].id_str;
+		var tweetId = data.statuses[0].id_str;
+		var text = scramble(data.statuses[0].text);
 		// ...and then we tell Twitter we want to retweet it!
-		T.post('statuses/retweet/' + retweetId, { }, function (error, response) {
-			if (response) {
-				console.log('Success! Check your bot, it should have retweeted something.')
-			}
-			// If there was an error with our Twitter call, we print it out here.
-			if (error) {
-				console.log('There was an error with Twitter:', error);
-			}
-		})
-        T.post('statuses/update', {status: 'gaming'}, function(error, data, response) {console.log(data)});
+
+        T.post('statuses/update', {status: text}, function(error, data, response) {console.log(data)});
 	  }
 	  // However, if our original search request had an error, we want to print it out here.
 	  else {
 	  	console.log('There was an error with your hashtag search:', error);
 	  }
 	});
+}
+
+function scramble(var text) {
+	var newText = text.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
+	stringArray = newText.split(" ");
+	var iterations = stringArray.length;
+	var newStringArray;
+	var i;
+	for(i = 0; i < iterations; i++) {
+		var index = Math.floor(Math.random() * stringArray.length);
+		newStringArray.push(stringArray[index]);
+		stringArray.splice(index, 1);
+	}
+	newText = "";
+	for(str of newStringArray) {
+		newText += (str + " ");
+	}
+	return newText;
 }
 
 // Try to retweet something as soon as we run the program...
