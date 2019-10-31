@@ -20,7 +20,7 @@ function retweetLatest() {
 		var text = scramble(data.statuses[0].text);
 		// ...and then we tell Twitter we want to retweet it!
 
-        T.post('statuses/update', {status: text}, function(error, data, response) {console.log(data)});
+        T.post('statuses/update', {status: text}, data.statuses[0], function(error, data, response) {console.log(data)});
 	  }
 	  // However, if our original search request had an error, we want to print it out here.
 	  else {
@@ -43,10 +43,13 @@ function scramble(text) {
 		console.log('added ' + newStringArray[newStringArray.length - 1]);
 	}
 	newText = "";
-	for(str of newStringArray) {
-		newText += (str + " ");
+    
+	for (var i = 0; i < newStringArray.length - 1; i++) {
+		newText += (newStringArray[i] + " ");
 	}
-	return newText;
+    
+    
+	return newText + "?";
 }
 
 // Try to retweet something as soon as we run the program...
