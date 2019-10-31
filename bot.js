@@ -30,18 +30,26 @@ function retweetLatest() {
 }
 
 function scramble(text) {
-	var newText = text.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
-	stringArray = newText.split(" ");
-	var iterations = stringArray.length;
+
+	stringArray = text.split(" ");
 	var newStringArray = [""];
+
+	var iterations = stringArray.length;
+
 	var i;
 	for(i = 0; i < iterations; i++) {
 
 		var index = Math.floor(Math.random() * stringArray.length);
-		newStringArray.push(stringArray[index]);
+		//maybe filtering links? if substring works the same way in JS
+		if(!(stringArray[index].substring(0, min(3, stringArray[index].lenth())).equals('http') || stringArray[index].substring(0, min(5, stringArray[index].lenth())).equals('bit.ly')) {
+			newStringArray.push(stringArray[index]);
+		}
+
 		stringArray.splice(index, 1);
 		console.log('added ' + newStringArray[newStringArray.length - 1]);
+
 	}
+<<<<<<< HEAD
 	newText = "";
     
 	for (var i = 0; i < newStringArray.length - 1; i++) {
@@ -50,6 +58,19 @@ function scramble(text) {
     
     
 	return newText + "?";
+=======
+
+	var newText = "";
+	for(str of newStringArray) {
+		newText += (str + " ");
+	}
+	newText = newText.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
+	return newText;
+>>>>>>> b923b15aa8ae41b78b0a92ccaecfacd3ad55e02f
+}
+
+function min(a, b) {
+	a < b ? return a : return b;
 }
 
 // Try to retweet something as soon as we run the program...
