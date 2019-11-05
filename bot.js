@@ -63,27 +63,32 @@ function scramble(text) {
 
 		var index = Math.floor(Math.random() * stringArray.length);
 		//maybe filtering links? if substring works the same way in JS
-		if(!(stringArray[index].substring(0, min(3, stringArray[index].length())) == 'http' || stringArray[index].substring(0, min(5, stringArray[index].length())) == 'bit.ly')) {
+		var httpCheck = stringArray[index].substring(0, 3);
+		var bitlyCheck = stringArray[index].substring(0, 5);
+		if(!(httpCheck == "http" || bitlyCheck == "bit.ly")) {
 			newStringArray.push(stringArray[index]);
+			console.log('added ' + newStringArray[newStringArray.length - 1]);
 		}
 
-		stringArray.splice(index, 1);
-		console.log('added ' + newStringArray[newStringArray.length - 1]);
 
 	}
 
-	newText = "";
+	var newText = "";
 
 	for (var i = 0; i < newStringArray.length - 1; i++) {
 		newText += (newStringArray[i] + " ");
 	}
 
-	var newText = "";
-	for(str of newStringArray) {
-		newText += (str + " ");
-	}
-	newText = newText.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
+	newText = newText.replace(/[.,\/!$%\^&\*;:{}=\-_`~()]/g,"");
 	return newText + "?";
+	return newText;
+}
+
+function min(a, b) {
+	if(a < b) {
+		return a;
+	}
+	return b;
 }
 
 function write(tweets) {
@@ -96,14 +101,6 @@ function write(tweets) {
 		if(err) throw err;
 		else console.log('wrote corpus');
 	});
-}
-
-function min(a, b) {
-	if(a < b) {
-		return a;
-	} else {
-		return b;
-	}
 }
 
 // Try to retweet something as soon as we run the program...
