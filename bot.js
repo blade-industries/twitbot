@@ -63,7 +63,7 @@ function scramble(text) {
 
 		var index = Math.floor(Math.random() * stringArray.length);
 		//maybe filtering links? if substring works the same way in JS
-		if(!(stringArray[index].substring(0, min(3, stringArray[index].length())).equals('http') || stringArray[index].substring(0, min(5, stringArray[index].length())).equals('bit.ly'))) {
+		if(!(stringArray[index].substring(0, min(3, stringArray[index].length())) == 'http' || stringArray[index].substring(0, min(5, stringArray[index].length())) == 'bit.ly')) {
 			newStringArray.push(stringArray[index]);
 		}
 
