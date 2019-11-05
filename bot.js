@@ -41,36 +41,29 @@ function scramble(text) {
 
 		var index = Math.floor(Math.random() * stringArray.length);
 		//maybe filtering links? if substring works the same way in JS
-		if(!(stringArray[index].substring(0, min(3, stringArray[index].lenth())).equals('http') || stringArray[index].substring(0, min(5, stringArray[index].lenth())).equals('bit.ly')) {
+		var httpCheck = stringArray[index].substring(0, 3);
+		var bitlyCheck = stringArray[index].substring(0, 5);
+		if(!(httpCheck == "http" || bitlyCheck == "bit.ly")) {
 			newStringArray.push(stringArray[index]);
+			console.log('added ' + newStringArray[newStringArray.length - 1]);
 		}
 
-		stringArray.splice(index, 1);
-		console.log('added ' + newStringArray[newStringArray.length - 1]);
 
 	}
-<<<<<<< HEAD
-	newText = "";
-    
-	for (var i = 0; i < newStringArray.length - 1; i++) {
-		newText += (newStringArray[i] + " ");
-	}
-    
-    
-	return newText + "?";
-=======
-
 	var newText = "";
 	for(str of newStringArray) {
 		newText += (str + " ");
 	}
-	newText = newText.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
+	newText = newText.replace(/[.,\/!$%\^&\*;:{}=\-_`~()]/g,"");
+	return newText + "?";
 	return newText;
->>>>>>> b923b15aa8ae41b78b0a92ccaecfacd3ad55e02f
 }
 
 function min(a, b) {
-	a < b ? return a : return b;
+	if(a < b) {
+		return a;
+	}
+	return b;
 }
 
 // Try to retweet something as soon as we run the program...
