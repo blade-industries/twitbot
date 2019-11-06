@@ -52,13 +52,14 @@ function getTweetData() {
 // }
 
 function scramble(text) {
-
+  //we split the tweet into an array of strings
 	stringArray = text.split(" ");
 	var newStringArray = [""];
 
 	var iterations = stringArray.length;
 
 	var i;
+	//we loop through the array, picking each word by random and adding it to a new array
 	for(i = 0; i < iterations; i++) {
 
 		var index = Math.floor(Math.random() * stringArray.length);
@@ -75,13 +76,14 @@ function scramble(text) {
 
 	var newText = "";
 
+  //turn the new array we made into a string without the last item, since that's a link.
 	for (var i = 0; i < newStringArray.length - 1; i++) {
 		newText += (newStringArray[i] + " ");
 	}
-
+  //remove characters that would be a bit weird out of context
 	newText = newText.replace(/[.,\/!$%\^&\*;:{}=\-_`~()]/g,"");
+	//add a question mark to the end
 	return newText + "?";
-	return newText;
 }
 
 function min(a, b) {
