@@ -55,8 +55,7 @@ function retweetLatest() {
 
 //reorder words of tweets, remove punctuation, but keep quoted tweet link at the end
 function scramble(text) {
-
-	// convert tweet text into array of words
+  //we split the tweet into an array of strings
 	stringArray = text.split(" ");
 	var newStringArray = [""];
 
@@ -79,10 +78,11 @@ function scramble(text) {
 			newStringArray.push(stringArray[index]);
 		}
 	}
-
+z
 	//reconstruct string from randomized array
 	var newText = "";
 
+  //turn the new array we made into a string without the last item, since that's a link.
 	for (var i = 0; i < newStringArray.length - 1; i++) {
 		newText += (newStringArray[i] + " ");
 	}
