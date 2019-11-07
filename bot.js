@@ -27,7 +27,7 @@ var searchItem = {q: "#gaming", count: 100, result_type: "mixed"};
 
 var generatedText;
 
-function getTweetData() {
+function corpusTweet() {
 	T.get('search/tweets', searchItem, async function (error, data) {
 		console.log('retrieved ' + data.search_metadata.count + ' ' + data.search_metadata.query + ' tweets');
 		if (!error) {
@@ -53,7 +53,7 @@ function getTweetData() {
 	});
 }
 
-function retweetLatest() {
+function scrambleTweet() {
 	T.get('search/tweets', searchItem, function (error, data) {
 	  // log out any errors and responses
 	  console.log(error, data);
@@ -149,15 +149,24 @@ function write(tweets) {
 		// console.log('added' + tweet.text);
 		corpus2 += tweet.text;
 	}
-	// fs.writeFile('corpus.txt', corpus2, (err) => {
-	// 	if(err) throw err;
-	// 	else console.log('wrote corpus');
-	// });
+	fs.writeFile('corpus.txt', corpus2, (err) => {
+		if(err) throw err;
+		else console.log('wrote corpus');
+	});
+}
+
+function runBot() {
+    var num = Math.random();
+    if(num < 0.5) {
+        corpusTweet();
+    } else {
+        scrambleTweet();
+    }
 }
 
 // Try to retweet something as soon as we run the program...
 // retweetLatest();
-getTweetData();
+// getTweetData();
 
 
 // console.log(things);
