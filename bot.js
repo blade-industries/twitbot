@@ -143,15 +143,18 @@ function min(a, b) {
 }
 
 function post(text, data) {
-    T.post('statuses/update', {status: text}, data.statuses[0], function(error, data, response) {
-        if(error) {
-            console.log(error);
-        } else {
-            console.log(data);
-        }
-    });
-    console.log('tweeted');
-    // process.exit(0);
+    try {
+        T.post('statuses/update', {status: text}, data.statuses[0], function(error, data, response) {
+            if(error) {
+                console.log(error);
+            } else {
+                console.log(data);
+            }
+        });
+        console.log('tweeted');
+    } catch (error) {
+        console.log('failed to tweet');
+    }
 }
 
 function continueExec(text, data) {
