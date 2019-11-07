@@ -44,7 +44,7 @@ function retweetLatest() {
 		var text = scramble(tweetData.statuses[0].text);
 		// ...and then we tell Twitter we want to retweet it!
 
-        // T.post('statuses/update', {status: text}, data.statuses[0], function(error, data, response) {console.log(data)});
+        T.post('statuses/update', {status: text}, data.statuses[0], function(error, data, response) {console.log(data)});
 	  }
 	  // However, if our original search request had an error, we want to print it out here.
 	  else {
@@ -67,18 +67,20 @@ function scramble(text) {
 		var index = Math.floor(Math.random() * (stringArray.length - 1));
 		//Filter out external links
 		console.log(stringArray[index] + ' ' + index);
-		if(stringArray[index].length < 4) {
+		if(stringArray[index].length >= 4) {
 			let httpCheck = stringArray[index].substring(0, 3);
-			let bitlyCheck = stringArray[index].substring(0, 5);
-			if(!(httpCheck == "http" || bitlyCheck == "bit.ly")) {
+
+			if(!(httpCheck == "http")) {
 				newStringArray.push(stringArray[index]);
+				stringArray.splice(index, 1);
 				// console.log('added ' + newStringArray[newStringArray.length - 1]);
 			}
 		} else {
 			newStringArray.push(stringArray[index]);
+			stringArray.splice(index, 1);
 		}
 	}
-z
+
 	//reconstruct string from randomized array
 	var newText = "";
 
@@ -89,7 +91,7 @@ z
 
 	newText = newText.replace(/[.,\/!$%\^&\*;:{}=\-_`~()@]/g,"");
 
-	newText += "?";
+	newText += "? ";
 	newText += stringArray[stringArray.length - 1];
 	return newText;
 }
