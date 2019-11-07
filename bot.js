@@ -1,28 +1,48 @@
 //TODO: gaming tweets with video, jumbled tweets,
 // Our Twitter library
 const Twit = require('twit');
+const Markov = require('markov-strings').default;
+
+const options = {
+    maxTries: 1000,
+    prng: Math.random,
+    filter: (result) => {
+        return result.string.split(' ').length >= 10;
+    }
+}
 
 //filesync to write for the markov library
 const fs = require('fs');
 
 
 // We need to include our configuration file
-var T = new Twit(require('./config.js'));
+const T = new Twit(require('./config.js'));
+
+var corpus2;
+var generatedText;
 
 // This is the URL of a search for the latest tweets on the '#mediaarts' hashtag.
 var searchItem = {q: "#gaming", count: 100, result_type: "mixed"};
 
 // This function finds the latest tweet with the #mediaarts hashtag, and retweets it.
-var hasRun = false;
+var post = function(text) {T.post('statuses/update', {status: text}, function(error, data, response) {console.log(data)});}
+
 function getTweetData() {
-	T.get('search/tweets', searchItem, function (error, data) {
+	T.get('search/tweets', searchItem, async function (error, data) {
 		console.log('retrieved ' + data.search_metadata.count + ' ' + data.search_metadata.query + ' tweets');
 		if (!error) {
 			console.log('returned data');
 			// tweetData = data;
 
 			write(data.statuses);
-			return data;
+
+			const markov = new Markov(corpus2.split('\n'), {stateSize: 1});
+			markov.buildCorpus();
+			try {
+				generatedText = await markov.generate(options);
+			} catch (error) {
+				console.error(error);
+			}
 
 		} else {
 			console.log('there was an error searching');
@@ -30,7 +50,6 @@ function getTweetData() {
 		}
 	});
 }
-
 
 function retweetLatest() {
 	T.get('search/tweets', searchItem, function (error, data) {
@@ -106,8 +125,9 @@ function min(a, b) {
 function write(tweets) {
 	var corpus = "";
 	for(tweet of tweets) {
-		console.log('added' + tweet.text);
+		// console.log('added' + tweet.text);
 		corpus += tweet.text;
+		corpus2 += tweet.text;
 	}
 	fs.writeFile('corpus.txt', corpus, (err) => {
 		if(err) throw err;
@@ -116,8 +136,8 @@ function write(tweets) {
 }
 
 // Try to retweet something as soon as we run the program...
-retweetLatest();
-// var things = getTweetData();
+// retweetLatest();
+getTweetData();
 // console.log(things);
 // if(hasRun) {
 // 	write(things.statuses);
