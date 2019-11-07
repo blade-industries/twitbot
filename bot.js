@@ -19,13 +19,13 @@ const fs = require('fs');
 const T = new Twit(require('./config.js'));
 
 var corpus2;
-var generatedText;
 
 // This is the URL of a search for the latest tweets on the '#mediaarts' hashtag.
 var searchItem = {q: "#gaming", count: 100, result_type: "mixed"};
 
 // This function finds the latest tweet with the #mediaarts hashtag, and retweets it.
-var post = function(text) {T.post('statuses/update', {status: text}, function(error, data, response) {console.log(data)});}
+
+var generatedText;
 
 function getTweetData() {
 	T.get('search/tweets', searchItem, async function (error, data) {
@@ -39,7 +39,9 @@ function getTweetData() {
 			const markov = new Markov(corpus2.split('\n'), {stateSize: 1});
 			markov.buildCorpus();
 			try {
-				generatedText = await markov.generate(options);
+				generatedText = await markov.generate(options).string;
+                console.log(generatedText);
+                continueExec(generatedText, data);
 			} catch (error) {
 				console.error(error);
 			}
@@ -63,7 +65,7 @@ function retweetLatest() {
 		var text = scramble(tweetData.statuses[0].text);
 		// ...and then we tell Twitter we want to retweet it!
 
-        T.post('statuses/update', {status: text}, data.statuses[0], function(error, data, response) {console.log(data)});
+        post(text, data);
 	  }
 	  // However, if our original search request had an error, we want to print it out here.
 	  else {
@@ -122,14 +124,25 @@ function min(a, b) {
 	return b;
 }
 
+function post(text, data) {
+    T.post('statuses/update', {status: text}, data.statuses[0], function(error, data, response) {console.log(data)});
+    process.exit(0);
+}
+
+function continueExec(text, data) {
+    if(generatedText == null) {
+        setTimeout(continueExec(text, data), 1000);
+        return;
+    }
+    post(text, data);
+}
+
 function write(tweets) {
-	var corpus = "";
 	for(tweet of tweets) {
 		// console.log('added' + tweet.text);
-		corpus += tweet.text;
 		corpus2 += tweet.text;
 	}
-	fs.writeFile('corpus.txt', corpus, (err) => {
+	fs.writeFile('corpus.txt', corpus2, (err) => {
 		if(err) throw err;
 		else console.log('wrote corpus');
 	});
@@ -138,6 +151,8 @@ function write(tweets) {
 // Try to retweet something as soon as we run the program...
 // retweetLatest();
 getTweetData();
+
+
 // console.log(things);
 // if(hasRun) {
 // 	write(things.statuses);
