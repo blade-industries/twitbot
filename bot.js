@@ -39,9 +39,9 @@ function getTweetData() {
 			const markov = new Markov(corpus2.split('\n'), {stateSize: 1});
 			markov.buildCorpus();
 			try {
-				generatedText = await markov.generate(options).string;
+				generatedText = markov.generate(options).string;
                 console.log(generatedText);
-                continueExec(generatedText, data);
+                post(generatedText, data);
 			} catch (error) {
 				console.error(error);
 			}
@@ -125,8 +125,15 @@ function min(a, b) {
 }
 
 function post(text, data) {
-    T.post('statuses/update', {status: text}, data.statuses[0], function(error, data, response) {console.log(data)});
-    process.exit(0);
+    T.post('statuses/update', {status: text}, data.statuses[0], function(error, data, response) {
+        if(error) {
+            console.log(error);
+        } else {
+            console.log(data);
+        }
+    });
+    console.log('tweeted');
+    // process.exit(0);
 }
 
 function continueExec(text, data) {
@@ -142,10 +149,10 @@ function write(tweets) {
 		// console.log('added' + tweet.text);
 		corpus2 += tweet.text;
 	}
-	fs.writeFile('corpus.txt', corpus2, (err) => {
-		if(err) throw err;
-		else console.log('wrote corpus');
-	});
+	// fs.writeFile('corpus.txt', corpus2, (err) => {
+	// 	if(err) throw err;
+	// 	else console.log('wrote corpus');
+	// });
 }
 
 // Try to retweet something as soon as we run the program...
