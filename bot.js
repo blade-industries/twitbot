@@ -1,6 +1,8 @@
 //TODO: gaming tweets with video, jumbled tweets,
 // Our Twitter library
-var Twit = require('twit');
+const Twit = require('twit');
+
+//filesync to write for the markov library
 const fs = require('fs');
 
 
@@ -30,57 +32,65 @@ function getTweetData() {
 }
 
 
-// function retweetLatest() {
-// 	T.get('search/tweets', searchItem, function (error, data) {
-// 	  // log out any errors and responses
-// 	  console.log(error, data);
-// 	  // If our search request to the server had no errors...
-// 	  if (!error) {
-// 	  	// ...then we grab the ID of the tweet we want to retweet...
-// 		tweetData = data;
-// 		var tweetId = tweetData.statuses[0].id_str;
-// 		var text = scramble(tweetData.statuses[0].text);
-// 		// ...and then we tell Twitter we want to retweet it!
-//
-//         // T.post('statuses/update', {status: text}, data.statuses[0], function(error, data, response) {console.log(data)});
-// 	  }
-// 	  // However, if our original search request had an error, we want to print it out here.
-// 	  else {
-// 	  	console.log('There was an error with your hashtag search:', error);
-// 	  }
-// 	});
-// }
+function retweetLatest() {
+	T.get('search/tweets', searchItem, function (error, data) {
+	  // log out any errors and responses
+	  console.log(error, data);
+	  // If our search request to the server had no errors...
+	  if (!error) {
+	  	// ...then we grab the ID of the tweet we want to retweet...
+		tweetData = data;
+		var tweetId = tweetData.statuses[0].id_str;
+		var text = scramble(tweetData.statuses[0].text);
+		// ...and then we tell Twitter we want to retweet it!
 
+        // T.post('statuses/update', {status: text}, data.statuses[0], function(error, data, response) {console.log(data)});
+	  }
+	  // However, if our original search request had an error, we want to print it out here.
+	  else {
+	  	console.log('There was an error with your hashtag search:', error);
+	  }
+	});
+}
+
+//reorder words of tweets, remove punctuation, but keep quoted tweet link at the end
 function scramble(text) {
 
+	// convert tweet text into array of words
 	stringArray = text.split(" ");
 	var newStringArray = [""];
 
 	var iterations = stringArray.length;
 
 	var i;
-	for(i = 0; i < iterations; i++) {
+	for(i = 0; i < iterations - 1; i++) {
 
-		var index = Math.floor(Math.random() * stringArray.length);
-		//maybe filtering links? if substring works the same way in JS
-		var httpCheck = stringArray[index].substring(0, 3);
-		var bitlyCheck = stringArray[index].substring(0, 5);
-		if(!(httpCheck == "http" || bitlyCheck == "bit.ly")) {
+		var index = Math.floor(Math.random() * (stringArray.length - 1));
+		//Filter out external links
+		console.log(stringArray[index] + ' ' + index);
+		if(stringArray[index].length < 4) {
+			let httpCheck = stringArray[index].substring(0, 3);
+			let bitlyCheck = stringArray[index].substring(0, 5);
+			if(!(httpCheck == "http" || bitlyCheck == "bit.ly")) {
+				newStringArray.push(stringArray[index]);
+				// console.log('added ' + newStringArray[newStringArray.length - 1]);
+			}
+		} else {
 			newStringArray.push(stringArray[index]);
-			console.log('added ' + newStringArray[newStringArray.length - 1]);
 		}
-
-
 	}
 
+	//reconstruct string from randomized array
 	var newText = "";
 
 	for (var i = 0; i < newStringArray.length - 1; i++) {
 		newText += (newStringArray[i] + " ");
 	}
 
-	newText = newText.replace(/[.,\/!$%\^&\*;:{}=\-_`~()]/g,"");
-	return newText + "?";
+	newText = newText.replace(/[.,\/!$%\^&\*;:{}=\-_`~()@]/g,"");
+
+	newText += "?";
+	newText += stringArray[stringArray.length - 1];
 	return newText;
 }
 
@@ -104,12 +114,12 @@ function write(tweets) {
 }
 
 // Try to retweet something as soon as we run the program...
-// retweetLatest();
-var things = getTweetData();
-console.log(things);
-if(hasRun) {
-	write(things.statuses);
-}
+retweetLatest();
+// var things = getTweetData();
+// console.log(things);
+// if(hasRun) {
+// 	write(things.statuses);
+// }
 // ...and then every hour after that. Time here is in milliseconds, so
 // 1000 ms = 1 second, 1 sec * 60 = 1 min, 1 min * 60 = 1 hour --> 1000 * 60 * 60
 // setInterval(retweetLatest, 1000 * 60 * 60);
