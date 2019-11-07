@@ -7,9 +7,7 @@ const options = {
     maxTries: 1000,
     prng: Math.random,
     filter: (result) => {
-        return
-            result.string.split(' ').length >= 10 &&
-            result.string.length < 240;
+        return result.string.split(' ').length >= 10 && result.string.length < 240;
     }
 }
 
@@ -43,7 +41,25 @@ function corpusTweet() {
 			try {
 				generatedText = markov.generate(options).string;
                 console.log(generatedText);
-                post(generatedText, data);
+                var genTextArray = generatedText.split(" ");
+                var newGenTextArray = [""];
+
+                for (var i = 0; i < genTextArray.length; i++) {
+                  if(genTextArray[i].length >= 4) {
+            			     let httpCheck = genTextArray[i].substring(0, 4);
+            			        if(!(httpCheck == "http")) {
+            				            newGenTextArray.push(genTextArray[i]);
+            			        }
+            		} else {
+            			newGenTextArray.push(genTextArray[i]);
+            		}
+              }
+
+              var newGeneratedText = "";
+              for (var i = 0; i < newGenTextArray.length; i++) {
+            		newGeneratedText += (newGenTextArray[i] + " ");
+            	}
+                post(newGeneratedText, data);
 			} catch (error) {
 				console.error(error);
 			}
@@ -91,7 +107,7 @@ function scramble(text) {
 		//Filter out external links
 		console.log(stringArray[index] + ' ' + index);
 		if(stringArray[index].length >= 4) {
-			let httpCheck = stringArray[index].substring(0, 3);
+			let httpCheck = stringArray[index].substring(0, 4);
 
 			if(!(httpCheck == "http")) {
 				newStringArray.push(stringArray[index]);
@@ -158,7 +174,7 @@ function write(tweets) {
 }
 
 function runBot() {
-    var num = Math.random();
+    var num = Math.Random();
     console.log(num);
     if(num < 0.5) {
         corpusTweet();
