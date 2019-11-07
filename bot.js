@@ -7,7 +7,9 @@ const options = {
     maxTries: 1000,
     prng: Math.random,
     filter: (result) => {
-        return result.string.split(' ').length >= 10;
+        return
+            result.string.split(' ').length >= 10 &&
+            result.string.length < 240;
     }
 }
 
@@ -21,7 +23,7 @@ const T = new Twit(require('./config.js'));
 var corpus2;
 
 // This is the URL of a search for the latest tweets on the '#mediaarts' hashtag.
-var searchItem = {q: "#gaming", count: 100, result_type: "mixed"};
+var searchItem = {q: "#gaming", count: 100, result_type: "recent"};
 
 // This function finds the latest tweet with the #mediaarts hashtag, and retweets it.
 
@@ -61,7 +63,7 @@ function scrambleTweet() {
 	  if (!error) {
 	  	// ...then we grab the ID of the tweet we want to retweet...
 		tweetData = data;
-		var tweetId = tweetData.statuses[0].id_str;
+		var tweetId = tweetData.statuses[Math.floor((Math.random() * tweetData.statuses.length))].id_str;
 		var text = scramble(tweetData.statuses[0].text);
 		// ...and then we tell Twitter we want to retweet it!
 
@@ -157,6 +159,7 @@ function write(tweets) {
 
 function runBot() {
     var num = Math.random();
+    console.log(num);
     if(num < 0.5) {
         corpusTweet();
     } else {
@@ -164,15 +167,4 @@ function runBot() {
     }
 }
 
-// Try to retweet something as soon as we run the program...
-// retweetLatest();
-// getTweetData();
-
-
-// console.log(things);
-// if(hasRun) {
-// 	write(things.statuses);
-// }
-// ...and then every hour after that. Time here is in milliseconds, so
-// 1000 ms = 1 second, 1 sec * 60 = 1 min, 1 min * 60 = 1 hour --> 1000 * 60 * 60
-// setInterval(retweetLatest, 1000 * 60 * 60);
+runBot();
