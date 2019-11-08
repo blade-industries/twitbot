@@ -1,4 +1,3 @@
-//TODO: gaming tweets with video, jumbled tweets,
 // Our Twitter library
 const Twit = require('twit');
 const Markov = require('markov-strings').default;
@@ -20,10 +19,8 @@ const T = new Twit(require('./config.js'));
 
 var corpus2;
 
-// This is the URL of a search for the latest tweets on the '#mediaarts' hashtag.
+// This is the URL of a search for the latest tweets on the '#gaming' hashtag.
 var searchItem = {q: "#gaming", count: 100, result_type: "recent"};
-
-// This function finds the latest tweet with the #mediaarts hashtag, and retweets it.
 
 var generatedText;
 
@@ -33,17 +30,18 @@ function corpusTweet() {
 		if (!error) {
 			console.log('returned data');
 			// tweetData = data;
-
+      //collecting all the recent gaming tweets
 			write(data.statuses);
-
+      //writing and building a corpus from the recent gaming tweets
 			const markov = new Markov(corpus2.split('\n'), {stateSize: 1});
 			markov.buildCorpus();
 			try {
+        //creates a string that uses the markov-string library
 				generatedText = markov.generate(options).string;
                 console.log(generatedText);
                 var genTextArray = generatedText.split(" ");
                 var newGenTextArray = [""];
-
+                //takes out links from the generatedText
                 for (var i = 0; i < genTextArray.length; i++) {
                   if(genTextArray[i].length >= 4) {
             			     let httpCheck = genTextArray[i].substring(0, 4);
@@ -59,6 +57,7 @@ function corpusTweet() {
               for (var i = 0; i < newGenTextArray.length; i++) {
             		newGeneratedText += (newGenTextArray[i] + " ");
             	}
+              //posts our unique tweet made from the corpus of collected tweets
                 post(newGeneratedText, data);
 			} catch (error) {
 				console.error(error);
@@ -77,11 +76,10 @@ function scrambleTweet() {
 	  console.log(error, data);
 	  // If our search request to the server had no errors...
 	  if (!error) {
-	  	// ...then we grab the ID of the tweet we want to retweet...
+	  	// ...then we grab the ID of the tweet we want to scramble
 		tweetData = data;
 		var tweetId = tweetData.statuses[Math.floor((Math.random() * tweetData.statuses.length))].id_str;
 		var text = scramble(tweetData.statuses[0].text);
-		// ...and then we tell Twitter we want to retweet it!
 
         post(text, data);
 	  }
@@ -112,7 +110,6 @@ function scramble(text) {
 			if(!(httpCheck == "http")) {
 				newStringArray.push(stringArray[index]);
 				stringArray.splice(index, 1);
-				// console.log('added ' + newStringArray[newStringArray.length - 1]);
 			}
 		} else {
 			newStringArray.push(stringArray[index]);
@@ -133,13 +130,6 @@ function scramble(text) {
 	newText += "? ";
 	newText += stringArray[stringArray.length - 1];
 	return newText;
-}
-
-function min(a, b) {
-	if(a < b) {
-		return a;
-	}
-	return b;
 }
 
 function post(text, data) {
@@ -167,9 +157,9 @@ function continueExec(text, data) {
 
 function write(tweets) {
 	for(tweet of tweets) {
-		// console.log('added' + tweet.text);
 		corpus2 += tweet.text;
 	}
+  //writes all the tweets to corpus.txt
 	fs.writeFile('corpus.txt', corpus2, (err) => {
 		if(err) throw err;
 		else console.log('wrote corpus');
@@ -179,6 +169,7 @@ function write(tweets) {
 function runBot() {
     var num = Math.random();
     console.log(num);
+    //choses to create a unique tweet or scramble a tweet
     if(num < 0.5) {
         corpusTweet();
     } else {
